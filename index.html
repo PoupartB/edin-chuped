@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>EDIN – Échelle de douleur et d’inconfort du nouveau-né (score auto)</title>
+<title>EDIN – Score automatique</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   body{font-family:Arial,sans-serif;background:#f6f7f9;margin:0;padding:20px;color:#111}
@@ -25,9 +25,9 @@
   label.opt input{margin-top:3px}
   .actions{margin:12px 0;display:flex;gap:10px;flex-wrap:wrap}
   button{padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fff;cursor:pointer}
-  .small{font-size:13px;opacity:.85}
   input[type="text"]{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px}
   textarea{width:100%;min-height:90px;padding:10px;border:1px solid #ddd;border-radius:10px;resize:vertical}
+  .small{font-size:13px;opacity:.85}
   @media print{.actions{display:none}body{background:#fff}}
 </style>
 </head>
@@ -35,25 +35,23 @@
 <body>
 <div class="page">
   <span class="badge">Douleur prolongée</span>
-  <span class="badge">NN à terme / prématuré (jusqu’à 6–9 mois)</span>
+  <span class="badge">EDIN</span>
 
   <h1>Échelle EDIN</h1>
-  <p class="subtitle">Douleur et inconfort du nouveau-né — score automatique</p>
+  <p class="subtitle">Douleur / inconfort prolongé du nouveau-né — score automatique</p>
 
   <p class="desc">
-    Pour mesurer un <strong>état douloureux prolongé</strong> (maladie, post-opératoire, gestes invasifs répétés).
-    <strong>Non adaptée</strong> à une douleur aiguë d’un soin isolé.
-    Score <strong>0 à 15</strong>, <strong>seuil de traitement : 5</strong>. :contentReference[oaicite:1]{index=1}
+    Score <strong>0 à 15</strong> (5 items cotés 0–3). <strong>Seuil de traitement : 5</strong>. :contentReference[oaicite:1]{index=1}
   </p>
 
   <div class="row">
     <div class="box">
       <div class="label">Date</div>
-      <input type="text" id="date" placeholder="JJ/MM/AAAA">
+      <input type="text" placeholder="JJ/MM/AAAA">
     </div>
     <div class="box">
       <div class="label">Heure</div>
-      <input type="text" id="heure" placeholder="HH:MM">
+      <input type="text" placeholder="HH:MM">
     </div>
   </div>
 
@@ -61,17 +59,17 @@
     <div class="box">
       <div class="label">Score total EDIN (0–15)</div>
       <div class="value" id="score">—</div>
-      <div class="small" id="need">Coche 1 valeur (0–3) pour chaque item.</div>
+      <div class="small" id="need">Coche 1 réponse dans chaque item.</div>
     </div>
     <div class="box">
       <div class="label">Interprétation</div>
       <div class="desc" id="interp">—</div>
-      <div class="small">Seuil traitement = 5 (selon la fiche EDIN).</div>
+      <div class="small">Seuil = 5</div>
     </div>
   </div>
 
   <div class="actions">
-    <button type="button" onclick="resetAll()">Réinitialiser</button>
+    <button type="button" id="resetBtn">Réinitialiser</button>
     <button type="button" onclick="window.print()">Imprimer</button>
   </div>
 
@@ -79,109 +77,30 @@
     <thead>
       <tr><th>Item</th><th>Choix (0 à 3)</th></tr>
     </thead>
-    <tbody>
-      <tr>
-        <td><strong>VISAGE</strong></td>
-        <td class="opts">
-          <label class="opt"><input type="radio" name="visage" value="0" onchange="calc()">0 – Visage détendu</label>
-          <label class="opt"><input type="radio" name="visage" value="1" onchange="calc()">1 – Grimaces passagères (sourcils/lèvres/menton…)</label>
-          <label class="opt"><input type="radio" name="visage" value="2" onchange="calc()">2 – Grimaces fréquentes, marquées ou prolongées</label>
-          <label class="opt"><input type="radio" name="visage" value="3" onchange="calc()">3 – Crispation permanente ou visage prostré/figé/violacé</label>
-        </td>
-      </tr>
-
-      <tr>
-        <td><strong>CORPS</strong></td>
-        <td class="opts">
-          <label class="opt"><input type="radio" name="corps" value="0" onchange="calc()">0 – Détendu</label>
-          <label class="opt"><input type="radio" name="corps" value="1" onchange="calc()">1 – Agitation transitoire, assez souvent calme</label>
-          <label class="opt"><input type="radio" name="corps" value="2" onchange="calc()">2 – Agitation fréquente mais retour au calme possible</label>
-          <label class="opt"><input type="radio" name="corps" value="3" onchange="calc()">3 – Agitation permanente / crispation / raideur ou motricité très pauvre, corps figé</label>
-        </td>
-      </tr>
-
-      <tr>
-        <td><strong>SOMMEIL</strong></td>
-        <td class="opts">
-          <label class="opt"><input type="radio" name="sommeil" value="0" onchange="calc()">0 – S’endort facilement, sommeil prolongé, calme</label>
-          <label class="opt"><input type="radio" name="sommeil" value="1" onchange="calc()">1 – S’endort difficilement</label>
-          <label class="opt"><input type="radio" name="sommeil" value="2" onchange="calc()">2 – Réveils spontanés fréquents hors soins, sommeil agité</label>
-          <label class="opt"><input type="radio" name="sommeil" value="3" onchange="calc()">3 – Pas de sommeil</label>
-        </td>
-      </tr>
-
-      <tr>
-        <td><strong>RELATION</strong></td>
-        <td class="opts">
-          <label class="opt"><input type="radio" name="relation" value="0" onchange="calc()">0 – Sourire aux anges / sourire-réponse, attentif à l’écoute</label>
-          <label class="opt"><input type="radio" name="relation" value="1" onchange="calc()">1 – Appréhension passagère au moment du contact</label>
-          <label class="opt"><input type="radio" name="relation" value="2" onchange="calc()">2 – Contact difficile, cri à la moindre stimulation</label>
-          <label class="opt"><input type="radio" name="relation" value="3" onchange="calc()">3 – Refuse le contact, aucune relation possible ; hurlement/gémissement sans stimulation</label>
-        </td>
-      </tr>
-
-      <tr>
-        <td><strong>RECONFORT</strong></td>
-        <td class="opts">
-          <label class="opt"><input type="radio" name="reconfort" value="0" onchange="calc()">0 – N’a pas besoin de réconfort</label>
-          <label class="opt"><input type="radio" name="reconfort" value="1" onchange="calc()">1 – Se calme rapidement (caresses/voix/succion)</label>
-          <label class="opt"><input type="radio" name="reconfort" value="2" onchange="calc()">2 – Se calme difficilement</label>
-          <label class="opt"><input type="radio" name="reconfort" value="3" onchange="calc()">3 – Inconsolable (succion désespérée)</label>
-        </td>
-      </tr>
-    </tbody>
+    <tbody id="tbody"></tbody>
   </table>
 
   <div class="row" style="margin-top:16px">
     <div class="box">
       <div class="label">Observations</div>
-      <textarea id="obs" placeholder="Contexte, soins, traitements, remarques…"></textarea>
+      <textarea placeholder="Contexte, soins, traitements, remarques…"></textarea>
     </div>
   </div>
 
   <p class="desc" style="margin-top:14px">
-    Réfs : Debillon T. et al. Arch Pediatr 1994 ; Debillon T. et al. Arch Dis Child Fetal Neonatal Ed 2001. :contentReference[oaicite:2]{index=2}
+    Réf EDIN (Debillon et al.). :contentReference[oaicite:2]{index=2}
   </p>
 </div>
 
 <script>
-function get(name){
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? parseInt(el.value, 10) : null;
-}
-
-function calc(){
-  const keys = ["visage","corps","sommeil","relation","reconfort"];
-  const vals = keys.map(k => get(k));
-
-  const scoreEl = document.getElementById("score");
-  const needEl = document.getElementById("need");
-  const interpEl = document.getElementById("interp");
-
-  if (vals.some(v => v === null)){
-    scoreEl.textContent = "—";
-    needEl.textContent = "Coche 1 valeur (0–3) pour chaque item.";
-    interpEl.textContent = "—";
-    return;
-  }
-
-  const total = vals.reduce((a,b)=>a+b,0);
-  scoreEl.textContent = String(total);
-  needEl.textContent = "Score calculé automatiquement.";
-
-  if (total >= 5){
-    interpEl.innerHTML = `<span style="color:#b00020;font-weight:800">≥ 5 : seuil de traitement</span>`;
-  } else {
-    interpEl.innerHTML = `<span style="color:#1a7f37;font-weight:800">&lt; 5</span>`;
-  }
-}
-
-function resetAll(){
-  document.querySelectorAll('input[type="radio"]:checked').forEach(r => r.checked = false);
-  calc();
-}
-
-calc();
-</script>
-</body>
-</html>
+  // ⚠️ Si tu veux que le texte colle mot pour mot à ton PDF, dis-moi et je te l’aligne ligne à ligne.
+  const items = [
+    { id:"visage",   title:"VISAGE",   options:[
+      ["0","Détendu"],
+      ["1","Grimaces passagères"],
+      ["2","Grimaces fréquentes / marquées"],
+      ["3","Crispation permanente / visage prostré"]
+    ]},
+    { id:"corps",    title:"CORPS",    options:[
+      ["0","Détendu"],
+      ["1","Agitation transitoire"],
