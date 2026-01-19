@@ -41,7 +41,7 @@
   <p class="subtitle">Douleur / inconfort prolongé du nouveau-né — score automatique</p>
 
   <p class="desc">
-    Score <strong>0 à 15</strong> (5 items cotés 0–3). <strong>Seuil de traitement : 5</strong>.
+    Score <strong>0 à 15</strong> (5 items cotés 0–3). <strong>Seuil de traitement : 5</strong>. :contentReference[oaicite:1]{index=1}
   </p>
 
   <div class="row">
@@ -104,3 +104,88 @@
     { id:"corps",    title:"CORPS",    options:[
       ["0","Détendu"],
       ["1","Agitation transitoire"],
+      ["2","Agitation fréquente"],
+      ["3","Agitation permanente / raideur / figé"]
+    ]},
+    { id:"sommeil",  title:"SOMMEIL",  options:[
+      ["0","S’endort facilement / sommeil calme"],
+      ["1","S’endort difficilement"],
+      ["2","Réveils fréquents / sommeil agité"],
+      ["3","Pas de sommeil"]
+    ]},
+    { id:"relation", title:"RELATION", options:[
+      ["0","Relation possible / sourire-réponse"],
+      ["1","Appréhension passagère au contact"],
+      ["2","Contact difficile / cri à la stimulation"],
+      ["3","Refus du contact / aucune relation possible"]
+    ]},
+    { id:"reconfort",title:"RECONFORT",options:[
+      ["0","N’a pas besoin de réconfort"],
+      ["1","Se calme rapidement"],
+      ["2","Se calme difficilement"],
+      ["3","Inconsolable"]
+    ]},
+  ];
+
+  const tbody = document.getElementById("tbody");
+
+  function render(){
+    tbody.innerHTML = items.map(it => `
+      <tr>
+        <td><strong>${it.title}</strong></td>
+        <td class="opts">
+          ${it.options.map(([v,txt]) => `
+            <label class="opt">
+              <input type="radio" name="${it.id}" value="${v}">
+              <strong>${v}</strong> – ${txt}
+            </label>
+          `).join("")}
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  function getVal(name){
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? parseInt(el.value, 10) : null;
+  }
+
+  function calc(){
+    const vals = items.map(it => getVal(it.id));
+    const scoreEl = document.getElementById("score");
+    const needEl  = document.getElementById("need");
+    const interpEl= document.getElementById("interp");
+
+    if (vals.some(v => v === null)){
+      scoreEl.textContent = "—";
+      needEl.textContent  = "Coche 1 réponse dans chaque item.";
+      interpEl.textContent= "—";
+      return;
+    }
+
+    const total = vals.reduce((a,b)=>a+b,0);
+    scoreEl.textContent = String(total);
+    needEl.textContent  = "Score calculé automatiquement.";
+
+    interpEl.innerHTML = (total >= 5)
+      ? `<span class="alert">≥ 5 : seuil de traitement</span>`
+      : `<span class="ok">&lt; 5</span>`;
+  }
+
+  function resetAll(){
+    document.querySelectorAll('input[type="radio"]:checked').forEach(r => r.checked = false);
+    calc();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  document.addEventListener("change", (e) => {
+    if (e.target && e.target.matches('input[type="radio"]')) calc();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+  render();
+  calc();
+</script>
+</body>
+</html>
